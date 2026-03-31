@@ -651,7 +651,7 @@ body {
         <div class="access-card" data-tier="supporter" onclick="selectAccess('supporter')">
           <div class="access-card-title">Early Supporter</div>
           <div class="access-card-desc">Founding member perks. First in line, forever.</div>
-          <div class="access-card-price">$20 one-time</div>
+          <div class="access-card-price">$20 deposit · refundable</div>
         </div>
       </div>
       <div class="input-fields" id="accessFields">
@@ -679,8 +679,6 @@ body {
 <footer class="footer">CodePulse · 2026</footer>
 
 <script>
-const STRIPE_PAYMENT_URL = 'https://buy.stripe.com/test_14A6oGctYdAgc96gyZgjC01';
-
 const answers = {};
 let currentQ = 1;
 let selectedAccess = null;
@@ -793,13 +791,6 @@ function submitSurvey() {
 
   console.log('=== SURVEY RESPONSE ===');
   console.log(JSON.stringify(answers, null, 2));
-
-  // If $20 supporter, redirect to Stripe then come back
-  if (selectedAccess === 'supporter') {
-    // Save answers to localStorage so we don't lose them
-    localStorage.setItem('codepulse_survey', JSON.stringify(answers));
-    window.open(STRIPE_PAYMENT_URL, '_blank');
-  }
 
   // Show thank you
   document.getElementById('survey').classList.remove('active');
