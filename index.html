@@ -307,95 +307,6 @@ body {
   color: var(--text-muted);
 }
 
-/* === ACCESS CARDS === */
-.access-cards { display: flex; flex-direction: column; gap: 10px; }
-
-.access-card {
-  position: relative;
-  padding: 20px;
-  background: var(--bg-white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.access-card:hover { border-color: var(--border-hover); }
-
-.access-card.selected {
-  background: var(--bg-selected);
-  border-color: var(--border-active);
-}
-
-.access-card.featured { border-color: var(--border-hover); border-width: 1.5px; }
-.access-card.featured.selected { border-color: var(--border-active); }
-
-.access-card-badge {
-  position: absolute;
-  top: -9px; right: 16px;
-  padding: 2px 10px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  border-radius: 4px;
-}
-
-.access-card-title {
-  font-size: 0.92rem;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: var(--text);
-}
-
-.access-card-desc {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-.access-card-price {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 3px 10px;
-  background: var(--accent-light);
-  color: var(--accent-text);
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  border-radius: 4px;
-}
-
-/* === DISCORD === */
-.discord-invite {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 20px;
-  padding: 14px 18px;
-  background: #f0f1fe;
-  border: 1px solid #dddef6;
-  border-radius: var(--radius);
-}
-
-.discord-text {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  margin-bottom: 2px;
-}
-
-.discord-link {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: #5865F2;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.discord-link:hover { text-decoration: underline; }
-
 /* === INPUT FIELDS === */
 .input-fields {
   margin-top: 16px;
@@ -539,6 +450,66 @@ body {
   color: var(--text-muted);
 }
 
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 360px;
+  margin: 24px auto 0;
+  text-align: left;
+}
+
+.contact-submit { width: 100%; justify-content: center; }
+
+.divider-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px auto;
+  max-width: 360px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.divider-or::before, .divider-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.discord-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  background: #5865F2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.discord-btn:hover {
+  background: #4752c4;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88,101,242,0.3);
+}
+
+.skip-link {
+  margin-top: 20px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.skip-link:hover { color: var(--text-secondary); }
+
 .footer {
   text-align: center;
   padding: 32px 0;
@@ -671,46 +642,57 @@ body {
       </div>
     </div>
 
-    <!-- Q5: Access -->
+    <!-- Q5: Pricing -->
     <div class="question" data-q="5">
       <div class="question-number">Question 05</div>
-      <h2>Would you like early access?</h2>
-      <div class="access-cards" id="accessCards">
-        <div class="access-card" data-tier="notify" onclick="selectAccess('notify')">
-          <div class="access-card-title">Just keep me posted</div>
-          <div class="access-card-desc">Get notified when we launch. No commitment.</div>
-        </div>
-        <div class="access-card featured" data-tier="beta" onclick="selectAccess('beta')">
-          <div class="access-card-badge">Recommended</div>
-          <div class="access-card-title">Sign me up for the beta</div>
-          <div class="access-card-desc">Priority access to the closed beta. Help shape the product.</div>
-        </div>
-      </div>
-      <div class="input-fields" id="accessFields">
-        <input type="email" class="field-input" id="emailInput" placeholder="your@email.com" required>
-        <input type="text" class="field-input" id="nameInput" placeholder="Your name (optional)">
-      </div>
-      <div class="discord-invite">
-        <svg width="20" height="15" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.4 37.4 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.7 9a.2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4 36.4 36.4 0 01-5.5 2.6.2.2 0 00-.1.3 47.2 47.2 0 003.6 5.9.2.2 0 00.3.1A58.6 58.6 0 0070.4 45.6v-.1c1.4-15-2.3-28-9.8-39.6a.2.2 0 00-.1 0zM23.7 37.3c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.1 6.3 7-2.8 7-6.3 7zm23.2 0c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.1 6.3 7-2.8 7-6.3 7z" fill="#5865F2"/></svg>
-        <div>
-          <div class="discord-text">Join our Discord to chat with the team</div>
-          <a href="https://discord.gg/BVph2ESTC" target="_blank" class="discord-link">discord.gg/BVph2ESTC</a>
-        </div>
+      <h2>How much would you pay per month for a tool like this?</h2>
+      <div class="options" data-name="price_range" data-type="radio">
+        <label class="option-item" data-type="radio"><input type="radio" name="price_range" value="0_10"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">$0 – $10 / month</span></label>
+        <label class="option-item" data-type="radio"><input type="radio" name="price_range" value="10_20"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">$10 – $20 / month</span></label>
+        <label class="option-item" data-type="radio"><input type="radio" name="price_range" value="20_50"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">$20 – $50 / month</span></label>
+        <label class="option-item" data-type="radio"><input type="radio" name="price_range" value="50_200"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">$50 – $200 / month</span></label>
       </div>
       <div class="nav-row">
         <button class="nav-back" onclick="goTo(4)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3m0 0l4-4M3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Back</button>
-        <button class="nav-next" id="submitBtn" disabled onclick="submitSurvey()">Submit <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8.5L6 12.5L14 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="nav-next" id="next5" disabled onclick="submitSurvey()">Submit <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8.5L6 12.5L14 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
   </section>
 
-  <!-- THANK YOU -->
+  <!-- THANK YOU + CONTACT -->
   <section class="thank-you" id="thankYou">
     <div class="thank-you-icon">
       <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M6 13.5L11 18.5L20 8.5" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
-    <h2>Thank you.</h2>
-    <p>Your feedback means a lot. We'll reach out when the beta is ready — you'll be among the first to know.</p>
+    <h2>Thank you for your input!</h2>
+    <p>Want to stay in the loop? Leave your email or join our Discord — we'd love to keep you updated.</p>
+
+    <div class="contact-form">
+      <input type="email" class="field-input" id="contactEmail" placeholder="your@email.com">
+      <input type="text" class="field-input" id="contactName" placeholder="Your name (optional)">
+      <button class="nav-next contact-submit" id="contactSubmit" onclick="submitContact()">
+        Stay updated
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="divider-or"><span>or</span></div>
+
+    <a href="https://discord.gg/BVph2ESTC" target="_blank" class="discord-btn">
+      <svg width="20" height="15" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.4 37.4 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.7 9a.2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4 36.4 36.4 0 01-5.5 2.6.2.2 0 00-.1.3 47.2 47.2 0 003.6 5.9.2.2 0 00.3.1A58.6 58.6 0 0070.4 45.6v-.1c1.4-15-2.3-28-9.8-39.6a.2.2 0 00-.1 0zM23.7 37.3c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.1 6.3 7-2.8 7-6.3 7zm23.2 0c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.1 6.3 7-2.8 7-6.3 7z" fill="#fff"/></svg>
+      Join our Discord
+    </a>
+
+    <div class="skip-link" onclick="showFinalThank()">Skip — I'm done</div>
+  </section>
+
+  <!-- FINAL THANK YOU -->
+  <section class="thank-you" id="finalThank">
+    <div class="thank-you-icon">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M6 13.5L11 18.5L20 8.5" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2>You're all set.</h2>
+    <p>Thanks for helping us build something useful. We'll be in touch.</p>
     <div class="tag" id="timestamp"></div>
   </section>
 
@@ -720,7 +702,6 @@ body {
 <script>
 const answers = {};
 let currentQ = 1;
-let selectedAccess = null;
 
 function startSurvey() {
   document.getElementById('hero').style.display = 'none';
@@ -783,16 +764,6 @@ function selectRating(v) {
   enableNext();
 }
 
-function selectAccess(tier) {
-  selectedAccess = tier;
-  document.querySelectorAll('.access-card').forEach(c => c.classList.remove('selected'));
-  document.querySelector(`.access-card[data-tier="${tier}"]`).classList.add('selected');
-  answers.access_tier = tier;
-  document.getElementById('accessFields').classList.add('visible');
-  setTimeout(() => document.getElementById('emailInput').focus(), 250);
-  enableNext();
-}
-
 function enableNext() {
   const q = currentQ;
   let ok = false;
@@ -800,29 +771,21 @@ function enableNext() {
   if (q === 2) ok = answers.verify_method && answers.verify_method.length > 0;
   if (q === 3) ok = answers.issue_types && answers.issue_types.length > 0;
   if (q === 4) ok = !!answers.interest_rating;
-  if (q === 5) {
-    const email = document.getElementById('emailInput').value.trim();
-    ok = !!selectedAccess && email && email.includes('@');
-  }
-  const btn = q === 5 ? document.getElementById('submitBtn') : document.getElementById('next' + q);
+  if (q === 5) ok = !!answers.price_range;
+  const btn = document.getElementById('next' + q);
   if (btn) btn.disabled = !ok;
 }
-
-document.getElementById('emailInput').addEventListener('input', enableNext);
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     if (!document.getElementById('survey').classList.contains('active')) { startSurvey(); return; }
-    const btn = currentQ === 5 ? document.getElementById('submitBtn') : document.getElementById('next' + currentQ);
+    const btn = document.getElementById('next' + currentQ);
     if (btn && !btn.disabled) btn.click();
   }
 });
 
 function submitSurvey() {
-  answers.email = document.getElementById('emailInput').value.trim();
-  answers.name = document.getElementById('nameInput').value.trim();
   answers.submitted_at = new Date().toISOString();
-  // Collect "Other" text inputs
   document.querySelectorAll('.option-extra-input').forEach(inp => {
     const v = inp.value.trim();
     if (v) answers[inp.dataset.name] = v;
@@ -831,9 +794,25 @@ function submitSurvey() {
   console.log('=== SURVEY RESPONSE ===');
   console.log(JSON.stringify(answers, null, 2));
 
-  // Show thank you
   document.getElementById('survey').classList.remove('active');
   document.getElementById('thankYou').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function submitContact() {
+  const email = document.getElementById('contactEmail').value.trim();
+  const name = document.getElementById('contactName').value.trim();
+  if (!email || !email.includes('@')) { document.getElementById('contactEmail').focus(); return; }
+  answers.contact_email = email;
+  if (name) answers.contact_name = name;
+  console.log('=== CONTACT INFO ===');
+  console.log(JSON.stringify({ email, name }, null, 2));
+  showFinalThank();
+}
+
+function showFinalThank() {
+  document.getElementById('thankYou').classList.remove('active');
+  document.getElementById('finalThank').classList.add('active');
   document.getElementById('timestamp').textContent = 'Recorded · ' + new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
