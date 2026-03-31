@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodePulse — AI Code Review Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #fafafa;
+  --bg-white: #ffffff;
+  --bg-hover: #f5f5f7;
+  --bg-selected: #eef4ff;
+  --border: #e5e5ea;
+  --border-hover: #d1d1d6;
+  --border-active: #4f6df5;
+  --accent: #4f6df5;
+  --accent-light: #eef1fe;
+  --accent-text: #3b5bdb;
+  --text: #1a1a1a;
+  --text-secondary: #6b6b76;
+  --text-muted: #a0a0ab;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', -apple-system, sans-serif;
+  --radius: 10px;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* === HERO === */
+.hero {
+  padding: 100px 0 72px;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: var(--accent-light);
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--accent-text);
+  letter-spacing: 0.04em;
+  margin-bottom: 24px;
+  animation: fadeIn 0.5s ease both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.hero h1 {
+  font-size: clamp(1.5rem, 3.8vw, 2rem);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: var(--text);
+  animation: fadeIn 0.5s ease 0.05s both;
+}
+
+.hero h1 .accent { color: var(--accent); }
+
+.hero p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 440px;
+  margin: 0 auto 32px;
+  animation: fadeIn 0.5s ease 0.1s both;
+}
+
+.hero-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  animation: fadeIn 0.5s ease 0.15s both;
+}
+
+.hero-start:hover {
+  background: #3d5bd9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.hero-start svg { transition: transform 0.2s; }
+.hero-start:hover svg { transform: translateX(2px); }
+
+/* === PROGRESS === */
+.progress-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 14px 0 0;
+  background: linear-gradient(var(--bg) 85%, transparent);
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.progress-step { color: var(--accent); font-weight: 500; }
+
+.progress-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* === SURVEY === */
+.survey { display: none; padding-bottom: 100px; }
+.survey.active { display: block; }
+
+.question { display: none; animation: slideUp 0.35s ease both; }
+.question.active { display: block; }
+
+.question-number {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.question h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.55;
+  margin-bottom: 28px;
+  color: var(--text);
+}
+
+/* === OPTIONS === */
+.options { display: flex; flex-direction: column; gap: 8px; }
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.option-item:hover { border-color: var(--border-hover); background: var(--bg-hover); }
+
+.option-item.selected {
+  background: var(--bg-selected);
+  border-color: var(--border-active);
+}
+
+.option-item input { display: none; }
+
+.option-check {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--text-muted);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.option-item[data-type="radio"] .option-check { border-radius: 50%; }
+
+.option-item.selected .option-check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.option-check svg { opacity: 0; transform: scale(0.5); transition: all 0.15s; }
+.option-item.selected .option-check svg { opacity: 1; transform: scale(1); }
+
+.option-label {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.option-label .hint { color: var(--text-muted); font-size: 0.82rem; }
+
+/* Conditional input for "Other" */
+.option-input-wrap {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+  padding-left: 44px;
+}
+
+.option-input-wrap.visible {
+  max-height: 60px;
+  opacity: 1;
+  margin-top: -2px;
+  margin-bottom: 2px;
+}
+
+/* === RATING === */
+.rating-scale {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.rating-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 8px;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rating-item:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+
+.rating-item.selected {
+  background: var(--bg-selected);
+  border-color: var(--border-active);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.rating-number {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.15s;
+}
+
+.rating-item.selected .rating-number { color: var(--accent); }
+.rating-item:hover .rating-number { color: var(--text-secondary); }
+
+.rating-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* === ACCESS CARDS === */
+.access-cards { display: flex; flex-direction: column; gap: 10px; }
+
+.access-card {
+  position: relative;
+  padding: 20px;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.access-card:hover { border-color: var(--border-hover); }
+
+.access-card.selected {
+  background: var(--bg-selected);
+  border-color: var(--border-active);
+}
+
+.access-card.featured { border-color: var(--accent); border-width: 1.5px; }
+
+.access-card-badge {
+  position: absolute;
+  top: -9px; right: 16px;
+  padding: 2px 10px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+.access-card-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.access-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.access-card-price {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 10px;
+  background: var(--accent-light);
+  color: var(--accent-text);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+/* === INPUT FIELDS === */
+.input-fields {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.35s ease;
+}
+
+.input-fields.visible { max-height: 200px; opacity: 1; }
+
+.field-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field-input::placeholder { color: var(--text-muted); }
+.field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+
+/* === NAV === */
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.nav-back:hover { border-color: var(--border-hover); color: var(--text); }
+
+.nav-next {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-next:hover { background: #3d5bd9; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.nav-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+.nav-next svg { transition: transform 0.15s; }
+.nav-next:hover svg { transform: translateX(2px); }
+
+.key-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.key-hint kbd {
+  padding: 1px 6px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+}
+
+/* === THANK YOU === */
+.thank-you {
+  display: none;
+  text-align: center;
+  padding: 120px 0;
+  animation: slideUp 0.5s ease both;
+}
+
+.thank-you.active { display: block; }
+
+.thank-you-icon {
+  width: 56px; height: 56px;
+  margin: 0 auto 24px;
+  background: var(--accent-light);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 0.4s cubic-bezier(0.22,1,0.36,1) 0.15s both;
+}
+
+.thank-you h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.thank-you p {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.thank-you .tag {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 6px 14px;
+  background: var(--bg-hover);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.footer {
+  text-align: center;
+  padding: 32px 0;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 500px) {
+  .hero { padding: 64px 0 48px; }
+  .rating-scale { gap: 5px; }
+  .rating-item { padding: 16px 6px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-badge">2 min survey</div>
+    <h1>Your AI agent writes code.<br><span class="accent">We make sure it works.</span></h1>
+    <p>Continuous review during your AI agent's coding process — catching bugs before they ever reach a pull request.</p>
+    <button class="hero-start" onclick="startSurvey()">
+      Share your experience
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </section>
+
+  <!-- SURVEY -->
+  <section class="survey" id="survey">
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span class="progress-step" id="progressLabel">01 / 05</span>
+        <span id="progressPercent">20%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:20%"></div>
+      </div>
+    </div>
+
+    <!-- Q1: Hours -->
+    <div class="question active" data-q="1">
+      <div class="question-number">Question 01</div>
+      <h2>How many hours per week do you spend reviewing or fixing AI-generated code?</h2>
+      <div class="options" data-name="review_hours" data-type="radio">
+        <label class="option-item" data-type="radio"><input type="radio" name="review_hours" value="less_1h"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">Less than 1 hour</span></label>
+        <label class="option-item" data-type="radio"><input type="radio" name="review_hours" value="1_3h"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">1–3 hours</span></label>
+        <label class="option-item" data-type="radio"><input type="radio" name="review_hours" value="3_5h"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">3–5 hours</span></label>
+        <label class="option-item" data-type="radio"><input type="radio" name="review_hours" value="5_10h"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">5–10 hours</span></label>
+        <label class="option-item" data-type="radio"><input type="radio" name="review_hours" value="10h_plus"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="2.5" fill="#fff"/></svg></span><span class="option-label">10+ hours</span></label>
+      </div>
+      <div class="nav-row">
+        <div></div>
+        <button class="nav-next" id="next1" disabled onclick="goTo(2)">Continue <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <div class="key-hint"><kbd>Enter ↵</kbd> to continue</div>
+    </div>
+
+    <!-- Q2: Verify method -->
+    <div class="question" data-q="2">
+      <div class="question-number">Question 02</div>
+      <h2>How do you currently verify AI-generated code works correctly?</h2>
+      <div class="options" data-name="verify_method" data-type="checkbox">
+        <label class="option-item"><input type="checkbox" name="verify_method" value="manual_testing"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Manual testing</span></label>
+        <label class="option-item"><input type="checkbox" name="verify_method" value="ai_review"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">AI built-in review <span class="hint">(e.g. Claude /review)</span></span></label>
+        <label class="option-item"><input type="checkbox" name="verify_method" value="cicd"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">CI/CD pipeline</span></label>
+        <label class="option-item"><input type="checkbox" name="verify_method" value="unit_tests"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Unit tests</span></label>
+        <label class="option-item"><input type="checkbox" name="verify_method" value="trust_it"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">I mostly trust it</span></label>
+        <label class="option-item" data-has-input="true"><input type="checkbox" name="verify_method" value="other"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Other</span></label>
+        <div class="option-input-wrap" data-for="verify_method_other"><input type="text" class="field-input option-extra-input" placeholder="What else do you use?" data-name="verify_method_other"></div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-back" onclick="goTo(1)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3m0 0l4-4M3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Back</button>
+        <button class="nav-next" id="next2" disabled onclick="goTo(3)">Continue <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Q3: Issue types -->
+    <div class="question" data-q="3">
+      <div class="question-number">Question 03</div>
+      <h2>What types of issues do you most commonly find in AI-generated code?</h2>
+      <div class="options" data-name="issue_types" data-type="checkbox">
+        <label class="option-item"><input type="checkbox" name="issue_types" value="missing_functionality"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Missing functionality</span></label>
+        <label class="option-item"><input type="checkbox" name="issue_types" value="ui_bugs"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">UI / layout bugs</span></label>
+        <label class="option-item"><input type="checkbox" name="issue_types" value="logic_errors"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Logic errors</span></label>
+        <label class="option-item"><input type="checkbox" name="issue_types" value="performance"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Performance issues</span></label>
+        <label class="option-item"><input type="checkbox" name="issue_types" value="security"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Security vulnerabilities</span></label>
+        <label class="option-item"><input type="checkbox" name="issue_types" value="integration"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Integration failures</span></label>
+        <label class="option-item" data-has-input="true"><input type="checkbox" name="issue_types" value="other"><span class="option-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="option-label">Other</span></label>
+        <div class="option-input-wrap" data-for="issue_types_other"><input type="text" class="field-input option-extra-input" placeholder="What other issues?" data-name="issue_types_other"></div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-back" onclick="goTo(2)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3m0 0l4-4M3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Back</button>
+        <button class="nav-next" id="next3" disabled onclick="goTo(4)">Continue <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Q4: Interest -->
+    <div class="question" data-q="4">
+      <div class="question-number">Question 04</div>
+      <h2>If a tool could continuously review your AI agent's code during development and catch bugs before merge — how interested would you be?</h2>
+      <div class="rating-scale" id="ratingScale">
+        <div class="rating-item" data-value="1" onclick="selectRating(1)"><span class="rating-number">1</span></div>
+        <div class="rating-item" data-value="2" onclick="selectRating(2)"><span class="rating-number">2</span></div>
+        <div class="rating-item" data-value="3" onclick="selectRating(3)"><span class="rating-number">3</span></div>
+        <div class="rating-item" data-value="4" onclick="selectRating(4)"><span class="rating-number">4</span></div>
+        <div class="rating-item" data-value="5" onclick="selectRating(5)"><span class="rating-number">5</span></div>
+      </div>
+      <div class="rating-labels"><span>Not interested</span><span>Very interested</span></div>
+      <div class="nav-row">
+        <button class="nav-back" onclick="goTo(3)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3m0 0l4-4M3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Back</button>
+        <button class="nav-next" id="next4" disabled onclick="goTo(5)">Continue <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Q5: Access -->
+    <div class="question" data-q="5">
+      <div class="question-number">Question 05</div>
+      <h2>Would you like early access?</h2>
+      <div class="access-cards" id="accessCards">
+        <div class="access-card" data-tier="notify" onclick="selectAccess('notify')">
+          <div class="access-card-title">Just keep me posted</div>
+          <div class="access-card-desc">Get notified when we launch. No commitment.</div>
+        </div>
+        <div class="access-card featured" data-tier="beta" onclick="selectAccess('beta')">
+          <div class="access-card-badge">Recommended</div>
+          <div class="access-card-title">Sign me up for the beta</div>
+          <div class="access-card-desc">Priority access to the closed beta. Help shape the product.</div>
+        </div>
+        <div class="access-card" data-tier="supporter" onclick="selectAccess('supporter')">
+          <div class="access-card-title">Early Supporter</div>
+          <div class="access-card-desc">Founding member perks. First in line, forever.</div>
+          <div class="access-card-price">$20 one-time</div>
+        </div>
+      </div>
+      <div class="input-fields" id="accessFields">
+        <input type="email" class="field-input" id="emailInput" placeholder="your@email.com" required>
+        <input type="text" class="field-input" id="nameInput" placeholder="Your name (optional)">
+      </div>
+      <div class="nav-row">
+        <button class="nav-back" onclick="goTo(4)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3m0 0l4-4M3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Back</button>
+        <button class="nav-next" id="submitBtn" disabled onclick="submitSurvey()">Submit <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8.5L6 12.5L14 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- THANK YOU -->
+  <section class="thank-you" id="thankYou">
+    <div class="thank-you-icon">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M6 13.5L11 18.5L20 8.5" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2>Thank you.</h2>
+    <p>Your feedback means a lot. We'll reach out when the beta is ready — you'll be among the first to know.</p>
+    <div class="tag" id="timestamp"></div>
+  </section>
+
+</div>
+<footer class="footer">CodePulse · 2026</footer>
+
+<script>
+const STRIPE_PAYMENT_URL = 'https://buy.stripe.com/test_14A6oGctYdAgc96gyZgjC01';
+
+const answers = {};
+let currentQ = 1;
+let selectedAccess = null;
+
+function startSurvey() {
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('survey').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goTo(q) {
+  if (q < 1 || q > 5) return;
+  document.querySelectorAll('.question').forEach(el => { el.classList.remove('active'); el.style.display = 'none'; });
+  const t = document.querySelector(`.question[data-q="${q}"]`);
+  t.style.display = 'block';
+  void t.offsetWidth;
+  t.classList.add('active');
+  currentQ = q;
+  const pct = (q / 5) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = String(q).padStart(2, '0') + ' / 05';
+  document.getElementById('progressPercent').textContent = Math.round(pct) + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Radio
+document.querySelectorAll('.options[data-type="radio"] .option-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const p = item.closest('.options');
+    p.querySelectorAll('.option-item').forEach(i => i.classList.remove('selected'));
+    item.classList.add('selected');
+    item.querySelector('input').checked = true;
+    answers[p.dataset.name] = item.querySelector('input').value;
+    enableNext();
+  });
+});
+
+// Checkbox
+document.querySelectorAll('.options[data-type="checkbox"] .option-item').forEach(item => {
+  item.addEventListener('click', e => {
+    e.preventDefault();
+    const input = item.querySelector('input');
+    input.checked = !input.checked;
+    item.classList.toggle('selected', input.checked);
+    const p = item.closest('.options');
+    answers[p.dataset.name] = Array.from(p.querySelectorAll('input:checked')).map(c => c.value);
+    // Show/hide "Other" input
+    if (item.dataset.hasInput) {
+      const wrap = p.querySelector(`.option-input-wrap[data-for="${p.dataset.name}_other"]`);
+      if (wrap) {
+        wrap.classList.toggle('visible', input.checked);
+        if (input.checked) setTimeout(() => wrap.querySelector('input').focus(), 200);
+      }
+    }
+    enableNext();
+  });
+});
+
+function selectRating(v) {
+  document.querySelectorAll('.rating-item').forEach(r => r.classList.remove('selected'));
+  document.querySelector(`.rating-item[data-value="${v}"]`).classList.add('selected');
+  answers.interest_rating = v;
+  enableNext();
+}
+
+function selectAccess(tier) {
+  selectedAccess = tier;
+  document.querySelectorAll('.access-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`.access-card[data-tier="${tier}"]`).classList.add('selected');
+  answers.access_tier = tier;
+  document.getElementById('accessFields').classList.add('visible');
+  setTimeout(() => document.getElementById('emailInput').focus(), 250);
+  enableNext();
+}
+
+function enableNext() {
+  const q = currentQ;
+  let ok = false;
+  if (q === 1) ok = !!answers.review_hours;
+  if (q === 2) ok = answers.verify_method && answers.verify_method.length > 0;
+  if (q === 3) ok = answers.issue_types && answers.issue_types.length > 0;
+  if (q === 4) ok = !!answers.interest_rating;
+  if (q === 5) {
+    const email = document.getElementById('emailInput').value.trim();
+    ok = !!selectedAccess && email && email.includes('@');
+  }
+  const btn = q === 5 ? document.getElementById('submitBtn') : document.getElementById('next' + q);
+  if (btn) btn.disabled = !ok;
+}
+
+document.getElementById('emailInput').addEventListener('input', enableNext);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (!document.getElementById('survey').classList.contains('active')) { startSurvey(); return; }
+    const btn = currentQ === 5 ? document.getElementById('submitBtn') : document.getElementById('next' + currentQ);
+    if (btn && !btn.disabled) btn.click();
+  }
+});
+
+function submitSurvey() {
+  answers.email = document.getElementById('emailInput').value.trim();
+  answers.name = document.getElementById('nameInput').value.trim();
+  answers.submitted_at = new Date().toISOString();
+  // Collect "Other" text inputs
+  document.querySelectorAll('.option-extra-input').forEach(inp => {
+    const v = inp.value.trim();
+    if (v) answers[inp.dataset.name] = v;
+  });
+
+  console.log('=== SURVEY RESPONSE ===');
+  console.log(JSON.stringify(answers, null, 2));
+
+  // If $20 supporter, redirect to Stripe then come back
+  if (selectedAccess === 'supporter') {
+    // Save answers to localStorage so we don't lose them
+    localStorage.setItem('codepulse_survey', JSON.stringify(answers));
+    window.open(STRIPE_PAYMENT_URL, '_blank');
+  }
+
+  // Show thank you
+  document.getElementById('survey').classList.remove('active');
+  document.getElementById('thankYou').classList.add('active');
+  document.getElementById('timestamp').textContent = 'Recorded · ' + new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
