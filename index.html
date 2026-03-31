@@ -766,6 +766,12 @@ function submitSurvey() {
   console.log('=== SURVEY RESPONSE ===');
   console.log(JSON.stringify(answers, null, 2));
 
+  fetch('/api/survey', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(answers)
+  }).catch(() => {});
+
   document.getElementById('survey').classList.remove('active');
   document.getElementById('thankYou').classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -778,6 +784,13 @@ function submitContact() {
   if (name) answers.contact_name = name;
   console.log('=== CONTACT INFO ===');
   console.log(JSON.stringify({ email, name }, null, 2));
+
+  fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, name, survey_id: answers.submitted_at })
+  }).catch(() => {});
+
   showFinalThank();
 }
 
