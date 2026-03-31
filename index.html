@@ -122,6 +122,13 @@ body {
 .hero-start svg { transition: transform 0.2s; }
 .hero-start:hover svg { transform: translateX(2px); }
 
+.hero-note {
+  margin-top: 16px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  animation: fadeIn 0.5s ease 0.2s both;
+}
+
 /* === PROGRESS === */
 .progress-wrap {
   position: sticky;
@@ -539,13 +546,14 @@ body {
 
   <!-- HERO -->
   <section class="hero" id="hero">
-    <div class="hero-badge">2 min survey</div>
-    <h1>Your AI agent writes code.<br><span class="accent">We make sure it works.</span></h1>
-    <p>Continuous review during your AI agent's coding process — catching bugs before they ever reach a pull request.</p>
+    <div class="hero-badge">5-question survey · 2 min</div>
+    <h1>We're building a tool that reviews<br>AI-generated code <span class="accent">before it ships.</span></h1>
+    <p>Your AI agent writes fast — but bugs still slip through. We're exploring a new approach: continuous code review during the agent's development process. <strong>We'd love your input.</strong></p>
     <button class="hero-start" onclick="startSurvey()">
-      Share your experience
+      Take the survey
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
+    <div class="hero-note">Help us understand if this is a real problem worth solving.</div>
   </section>
 
   <!-- SURVEY -->
