@@ -368,6 +368,34 @@ body {
   border-radius: 4px;
 }
 
+/* === DISCORD === */
+.discord-invite {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 14px 18px;
+  background: #f0f1fe;
+  border: 1px solid #dddef6;
+  border-radius: var(--radius);
+}
+
+.discord-text {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+.discord-link {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: #5865F2;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.discord-link:hover { text-decoration: underline; }
+
 /* === INPUT FIELDS === */
 .input-fields {
   margin-top: 16px;
@@ -657,15 +685,17 @@ body {
           <div class="access-card-title">Sign me up for the beta</div>
           <div class="access-card-desc">Priority access to the closed beta. Help shape the product.</div>
         </div>
-        <div class="access-card" data-tier="supporter" onclick="selectAccess('supporter')">
-          <div class="access-card-title">Early Supporter</div>
-          <div class="access-card-desc">Founding member perks. First in line, forever.</div>
-          <div class="access-card-price">$20 deposit · refundable</div>
-        </div>
       </div>
       <div class="input-fields" id="accessFields">
         <input type="email" class="field-input" id="emailInput" placeholder="your@email.com" required>
         <input type="text" class="field-input" id="nameInput" placeholder="Your name (optional)">
+      </div>
+      <div class="discord-invite">
+        <svg width="20" height="15" viewBox="0 0 71 55" fill="none"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.4 37.4 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.1a58.8 58.8 0 0017.7 9a.2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4 36.4 36.4 0 01-5.5 2.6.2.2 0 00-.1.3 47.2 47.2 0 003.6 5.9.2.2 0 00.3.1A58.6 58.6 0 0070.4 45.6v-.1c1.4-15-2.3-28-9.8-39.6a.2.2 0 00-.1 0zM23.7 37.3c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.1 6.3 7-2.8 7-6.3 7zm23.2 0c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.1 6.3 7-2.8 7-6.3 7z" fill="#5865F2"/></svg>
+        <div>
+          <div class="discord-text">Join our Discord to chat with the team</div>
+          <a href="https://discord.gg/BVph2ESTC" target="_blank" class="discord-link">discord.gg/BVph2ESTC</a>
+        </div>
       </div>
       <div class="nav-row">
         <button class="nav-back" onclick="goTo(4)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3m0 0l4-4M3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Back</button>
